@@ -44,8 +44,16 @@ $ npm run start:prod
 La documentación de la API generada por Swagger está disponible en:
 
 \`\`\`
-/api/v1/docs
+http://localhost:4000/api/v1/docs
 \`\`\`
+
+
+Link del proyecto desplegado
+
+\`\`\`
+https://brayan-bravo-technical-test.onrender.com/api/v1/docs
+\`\`\`
+
 
 ## Pruebas
 # Pruebas unitarias
