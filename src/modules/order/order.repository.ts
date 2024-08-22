@@ -44,12 +44,22 @@ export class OrderRepository implements IOrderRepository {
 		return this.database.order.update({
 			where: { id: orderId },
 			data,
-			include: { status: true, seller: true, courier: true }
+			include: {
+				status: true,
+				seller: { select: { id: true, workerCode: true, name: true, email: true } },
+				courier: { select: { id: true, workerCode: true, name: true, email: true } },
+			}
 		})
 	}
 
 	async list(): Promise<Order[]> {
-		return this.database.order.findMany({include: {status: true, seller: true, courier: true}})
+		return this.database.order.findMany({
+			include: {
+				status: true,
+				seller: { select: { id: true, workerCode: true, name: true, email: true } },
+				courier: { select: { id: true, workerCode: true, name: true, email: true } },
+			}
+		})
 	}
 
 	async findOne(id: number): Promise<(Order & {status: {status: string }}) | null> {
