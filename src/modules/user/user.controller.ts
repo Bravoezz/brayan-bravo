@@ -5,7 +5,7 @@ import { IUserService, IUserServiceToken } from './user.contracts';
 import { CreateUserResponse, FindOneUserResponse } from './dto/request-responses.dto';
 import { AuthGuard } from '../auth/guards/auth.guard';
 
-@ApiBearerAuth()
+
 @ApiTags('user')
 @Controller('user')
 export class UserController {
@@ -23,7 +23,7 @@ export class UserController {
 		}
 	}
 
-	//@ApiBearerAuth()// beare auth in swagger para endpoint especifico
+	@ApiBearerAuth()// beare auth in swagger para endpoint especifico
 	@Get('list/:id')
 	@UseGuards(AuthGuard) //login jwt
 	@ApiOperation({ summary: 'Encontrar un usuario' })
