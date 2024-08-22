@@ -28,8 +28,8 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('/api/v1/docs', app, document);
 
-	await app.listen(4000, () => {
-		console.log(`Server started listening: 4000`);
+	await app.listen(process.env.PORT || 4000, () => {
+		console.log(`Server started listening: ${process.env.PORT || 4000}`);
 	});
 }
 bootstrap();
