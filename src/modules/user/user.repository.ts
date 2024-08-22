@@ -13,7 +13,7 @@ export class UserRepository implements IUserRepository {
 	}
 
 	async findOne(id: number): Promise<User> {
-		return this.database.user.findUnique({ where: {id}})
+		return this.database.user.findUnique({ where: {id}, include: { role: true }})
 	}
 
 	async findByMatch(filter: Partial<User>): Promise<User | null> {

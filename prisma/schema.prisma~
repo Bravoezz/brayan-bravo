@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider          = "sqlserver"
+    url               = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// Tabla de roles
+model Role {
+    id    Int    @id @default(autoincrement())
+    name  String @unique
+    users User[]
+}
+
+// Tabla de estados de pedidos
+model OrderStatus {
+    id     Int     @id @default(autoincrement())
+    status String  @unique
+    orders Order[]
+}
+
+// Tabla de usuarios
+model User {
+    id         Int      @id @default(autoincrement())
+    workerCode String   @unique
+    name       String
+    email      String   @unique
+    phone      String?
+    position   String?
+    password   String
+    roleId     Int
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // relations
+    role            Role    @relation(fields: [roleId], references: [id])
+    ordersRequested Order[] @relation("SellerOrders")
+    deliveries      Order[] @relation("CourierDeliveries")
+    orders          Order[] @relation("UserOrders")
+}
+
+// Tabla de productos
+model Product {
+    id            Int      @id @default(autoincrement())
+    sku           String   @unique
+    name          String
+    type          String
+    tags          String? // Etiquetas separadas por coma
+    price         Float
+    unitOfMeasure String
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    // relations
+    orderItems OrderItem[]
+}
+
+// Tabla de pedidos
+model Order {
+    id            Int       @id @default(autoincrement())
+    orderNumber   String    @unique
+    orderDate     DateTime  @default(now())
+    receptionDate DateTime?
+    dispatchDate  DateTime?
+    deliveryDate  DateTime?
+    statusId      Int
+    courierId     Int
+    sellerId      Int
+    userId        Int
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    // relations
+    courier   User        @relation("CourierDeliveries", fields: [courierId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    seller    User        @relation("SellerOrders", fields: [sellerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    user      User        @relation("UserOrders", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    status    OrderStatus @relation(fields: [statusId], references: [id])
+    OrderItem OrderItem[]
+}
+
+// Tabla intermedia para relacionar productos y pedidos
+model OrderItem {
+    id        Int      @id @default(autoincrement())
+    quantity  Int?
+    orderId   Int
+    productId Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // relaciones
+    order   Order   @relation(fields: [orderId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+}
