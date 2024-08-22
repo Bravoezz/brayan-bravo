@@ -28,6 +28,14 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, options);
 	SwaggerModule.setup('/api/v1/docs', app, document);
 
+	// Acceder a la instancia del servidor HTTP y configurar los timeouts
+	const server = app.getHttpServer();
+
+	// Configuración de timeouts en la instancia del servidor HTTP
+	server.keepAliveTimeout = 120000; // 120 segundos
+	server.headersTimeout = 120000;   // 120 segundos
+
+
 	await app.listen(process.env.PORT || 4000, () => {
 		console.log(`Server started listening: ${process.env.PORT || 4000}`);
 	});
